@@ -37,10 +37,10 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/dennisrutjes/jivan/config"
+	"github.com/dennisrutjes/jivan/data_provider"
+	"github.com/dennisrutjes/jivan/wfs3"
 	"github.com/go-spatial/geom"
-	"github.com/go-spatial/jivan/config"
-	"github.com/go-spatial/jivan/data_provider"
-	"github.com/go-spatial/jivan/wfs3"
 	"github.com/julienschmidt/httprouter"
 )
 

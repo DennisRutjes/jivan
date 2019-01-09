@@ -32,7 +32,7 @@ import (
 	"hash/fnv"
 	"log"
 
-	"github.com/go-spatial/jivan/data_provider"
+	"github.com/dennisrutjes/jivan/data_provider"
 )
 
 func CollectionsMetaData(p *data_provider.Provider, serveAddress string, checkOnly bool) (content *CollectionsInfo, contentId string, err error) {

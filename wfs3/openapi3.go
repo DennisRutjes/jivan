@@ -34,7 +34,7 @@ import (
 	"hash/fnv"
 	"log"
 
-	"github.com/go-spatial/jivan/config"
+	"github.com/dennisrutjes/jivan/config"
 	"github.com/getkin/kin-openapi/openapi3"
 )
 

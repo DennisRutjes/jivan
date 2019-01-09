@@ -34,11 +34,10 @@ package data_provider
 import (
 	"context"
 	"fmt"
+	prv "github.com/DennisRutjes/jivan/provider"
+	"github.com/go-spatial/geom"
 	"sort"
 	"time"
-
-	"github.com/go-spatial/geom"
-	prv "github.com/go-spatial/tegola/provider"
 )
 
 type BadTimeString struct {

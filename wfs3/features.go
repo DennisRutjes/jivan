@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"hash/fnv"
 
+	"github.com/dennisrutjes/jivan/data_provider"
 	"github.com/go-spatial/geom"
 	"github.com/go-spatial/geom/encoding/geojson"
-	"github.com/go-spatial/jivan/data_provider"
 )
 
 func FeatureData(cname string, fid uint64, p *data_provider.Provider, checkOnly bool) (content *Feature, contentId string, err error) {
