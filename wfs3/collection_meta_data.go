@@ -29,13 +29,12 @@ package wfs3
 
 import (
 	"fmt"
+	"github.com/dennisrutjes/jivan/provider"
 	"hash/fnv"
 	"log"
-
-	"github.com/dennisrutjes/jivan/data_provider"
 )
 
-func CollectionsMetaData(p *data_provider.Provider, serveAddress string, checkOnly bool) (content *CollectionsInfo, contentId string, err error) {
+func CollectionsMetaData(p *provider.Provider, serveAddress string, checkOnly bool) (content *CollectionsInfo, contentId string, err error) {
 	// TODO: This calculation of contentId assumes an unchanging data set.
 	// 	When a changing data set is needed this will have to be updated, hopefully after data providers can tell us
 	// 	something about updates.
@@ -64,7 +63,7 @@ func CollectionsMetaData(p *data_provider.Provider, serveAddress string, checkOn
 	return &csInfo, contentId, nil
 }
 
-func CollectionMetaData(name string, p *data_provider.Provider, serveAddress string, checkOnly bool) (content *CollectionInfo, contentId string, err error) {
+func CollectionMetaData(name string, p *provider.Provider, serveAddress string, checkOnly bool) (content *CollectionInfo, contentId string, err error) {
 	// TODO: This calculation of contentId assumes an unchanging data set.
 	// 	When a changing data set is needed this will have to be updated, hopefully after data providers can tell us
 	// 	something about updates.

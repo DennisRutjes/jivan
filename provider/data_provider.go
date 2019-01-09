@@ -25,7 +25,7 @@
 
 // jivan project provider.go
 
-package data_provider
+package provider
 
 // Builds upon the tegola Tiler interface to reuse data providers from tegola.
 // Instantiate by:
@@ -34,7 +34,6 @@ package data_provider
 import (
 	"context"
 	"fmt"
-	prv "github.com/DennisRutjes/jivan/provider"
 	"github.com/go-spatial/geom"
 	"sort"
 	"time"
@@ -89,7 +88,7 @@ type tempCollection struct {
 }
 
 type Provider struct {
-	Tiler           prv.Tiler
+	Tiler           Tiler
 	tempCollections map[string]*tempCollection
 }
 
@@ -118,7 +117,7 @@ func parse_time_string(ts string) (t time.Time, err error) {
 // If the feature has none of these tags, we'll consider it non-intersecting.
 // If only one of start_time or stop_time is provided, the other will be considered
 //	infitity or negative infinity respectively.
-func feature_time_intersects_time_filter(f *prv.Feature, start_time_str, stop_time_str, timestamp_str string) (bool, error) {
+func feature_time_intersects_time_filter(f *Feature, start_time_str, stop_time_str, timestamp_str string) (bool, error) {
 	// --- Collect any time parameters from feature's tags
 	// Feature start, feature stop, feature timestamp
 	var fstart_str, fstop_str, fts_str string
@@ -264,7 +263,7 @@ func (p *Provider) MakeCollection(name string, featureIds []FeatureId) (string, 
 }
 
 // Returns f if items from properties match the properties of f.  Otherwise returns nil.
-func property_filter(f *prv.Feature, properties map[string]string) (*prv.Feature, error) {
+func property_filter(f *Feature, properties map[string]string) (*Feature, error) {
 	starttime := ""
 	stoptime := ""
 	timestamp := ""
@@ -298,7 +297,7 @@ func property_filter(f *prv.Feature, properties map[string]string) (*prv.Feature
 }
 
 // Get all features for a particular collection
-func (p *Provider) CollectionFeatures(collectionName string, properties map[string]string, extent *geom.Extent) ([]*prv.Feature, error) {
+func (p *Provider) CollectionFeatures(collectionName string, properties map[string]string, extent *geom.Extent) ([]*Feature, error) {
 	// return a temp collection with this name if there is one
 	for tcn := range p.tempCollections {
 		if collectionName == tcn {
@@ -308,10 +307,10 @@ func (p *Provider) CollectionFeatures(collectionName string, properties map[stri
 	}
 
 	// otherwise hit the Tiler provider to get features for this collectionName
-	pFs := make([]*prv.Feature, 0, 100)
+	pFs := make([]*Feature, 0, 100)
 
 	var err error
-	getFeatures := func(f *prv.Feature) error {
+	getFeatures := func(f *Feature) error {
 		if properties != nil {
 			f, err = property_filter(f, properties)
 			if err != nil {
@@ -335,7 +334,7 @@ func (p *Provider) CollectionFeatures(collectionName string, properties map[stri
 }
 
 // Get features given collection/pk pairs
-func (p *Provider) GetFeatures(featureIds []FeatureId) ([]*prv.Feature, error) {
+func (p *Provider) GetFeatures(featureIds []FeatureId) ([]*Feature, error) {
 	// Feature pks grouped by collection
 	cf := make(map[string][]uint64)
 	fcount := 0
@@ -348,7 +347,7 @@ func (p *Provider) GetFeatures(featureIds []FeatureId) ([]*prv.Feature, error) {
 	}
 
 	// Desired features
-	fs := make([]*prv.Feature, 0, fcount)
+	fs := make([]*Feature, 0, fcount)
 	for col, fpks := range cf {
 		colFs, err := p.CollectionFeatures(col, nil, nil)
 		if err != nil {
