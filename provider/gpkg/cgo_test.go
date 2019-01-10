@@ -3,10 +3,10 @@
 package gpkg
 
 import (
+	"github.com/go-spatial/tegola/dict"
 	"testing"
 
-	"github.com/dennisrutjes/tegola/dict"
-	"github.com/dennisrutjes/tegola/provider"
+	"github.com/DennisRutjes/tegola/provider"
 )
 
 // This is a test to just see that the init function is doing something.

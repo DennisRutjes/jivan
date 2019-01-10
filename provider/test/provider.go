@@ -2,12 +2,11 @@ package test
 
 import (
 	"context"
+	"github.com/go-spatial/tegola/dict"
 
-	"github.com/dennisrutjes/tegola/provider"
+	"github.com/DennisRutjes/tegola/provider"
 	"github.com/go-spatial/geom"
 	"github.com/go-spatial/tegola"
-
-	"github.com/dennisrutjes/tegola/dict"
 )
 
 const Name = "test"
@@ -48,7 +47,7 @@ func (tp *TileProvider) TileFeatures(ctx context.Context, layer string, t provid
 		ID:       0,
 		Geometry: ext.AsPolygon(),
 		SRID:     srid,
-		Properties: map[string]interface{}{
+		Tags: map[string]interface{}{
 			"type": "debug_buffer_outline",
 		},
 	}

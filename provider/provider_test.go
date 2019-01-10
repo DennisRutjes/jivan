@@ -3,8 +3,8 @@ package provider_test
 import (
 	"testing"
 
-	"github.com/dennisrutjes/tegola/provider"
-	"github.com/dennisrutjes/tegola/provider/test"
+	"github.com/DennisRutjes/jivan/provider"
+	"github.com/DennisRutjes/jivan/provider/test"
 )
 
 func TestProviderInterface(t *testing.T) {

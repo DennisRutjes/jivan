@@ -5,7 +5,7 @@ package gpkg
 import (
 	"testing"
 
-	"github.com/dennisrutjes/tegola/provider"
+	"github.com/DennisRutjes/jivan/provider"
 )
 
 // This is a test to just see that the init function is not doing

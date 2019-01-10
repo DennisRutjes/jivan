@@ -72,7 +72,7 @@ for further details see the README in each folder
   Responsible for wfs3-specific details such as go versions of wfs3 types and collecting
   appropriate data for each wfs3 endpoint.  The types here implement the supported encodings.
 
-* **data_provider/**
+* **provider/**
   Responsible for access to data backends.  Essentially a wrapper with some functionality added
   for [tegola data providers](https://github.com/go-spatial/tegola/tree/filterer_implementation/provider)
 

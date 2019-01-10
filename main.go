@@ -30,17 +30,15 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
+	"github.com/DennisRutjes/jivan/config"
+	"github.com/DennisRutjes/jivan/provider"
+	"github.com/DennisRutjes/jivan/provider/gpkg"
 
-	"github.com/dennisrutjes/jivan/config"
-	"github.com/dennisrutjes/jivan/data_provider"
-	"github.com/dennisrutjes/jivan/server"
-	"github.com/dennisrutjes/jivan/util"
-	"github.com/dennisrutjes/jivan/wfs3"
+	"github.com/DennisRutjes/jivan/server"
+	"github.com/DennisRutjes/jivan/util"
+	"github.com/DennisRutjes/jivan/wfs3"
+
 	"github.com/go-spatial/tegola/dict"
-	tegola_provider "github.com/go-spatial/tegola/provider"
-	"github.com/go-spatial/tegola/provider/gpkg"
-	"github.com/go-spatial/tegola/provider/postgis"
 )
 
 func main() {
@@ -51,8 +49,8 @@ func main() {
 	var configFile string
 	var err error
 
-	flag.StringVar(&bindIp, "b", "127.0.0.1", "IP address for the server to listen on")
-	flag.IntVar(&bindPort, "p", 9000, "port for the server to listen on")
+	flag.StringVar(&bindIp, "b", "0.0.0.0", "IP address for the server to listen on")
+	flag.IntVar(&bindPort, "p", 8080, "port for the server to listen on")
 	flag.StringVar(&serveAddress, "s", "", "IP:Port that result urls will be constructed with (defaults to the IP:Port used in request)")
 	flag.StringVar(&dataSource, "d", "", "data source (path to .gpkg file or connection string to PostGIS database i.e 'user={user} password={password} dbname={dbname} host={host} port={port}')")
 	flag.StringVar(&configFile, "c", "", "config (path to .toml file)")
@@ -81,16 +79,11 @@ func main() {
 	}
 
 	var autoconfig func(ds string) (dict.Dicter, error)
-	var ntp func(config dict.Dicter) (tegola_provider.Tiler, error)
+	var ntp func(config dict.Dicter) (provider.Tiler, error)
 	if dataSource != "" {
-		// Is this a PostGIS conn string or GeoPackage path?
-		if _, err := os.Stat(config.Configuration.Providers.Data); os.IsNotExist(err) {
-			autoconfig = postgis.AutoConfig
-			ntp = postgis.NewTileProvider
-		} else {
-			autoconfig = gpkg.AutoConfig
-			ntp = gpkg.NewTileProvider
-		}
+		autoconfig = gpkg.AutoConfig
+		ntp = gpkg.NewTileProvider
+
 	}
 	if dataSource == "" {
 		dataSource = util.DefaultGpkg()
@@ -112,7 +105,7 @@ func main() {
 		panic(fmt.Sprintf("data provider creation error for '%v': %v", dataSource, err))
 	}
 
-	p := data_provider.Provider{Tiler: dataProvider}
+	p := provider.Provider{Tiler: dataProvider}
 	wfs3.GenerateOpenAPIDocument()
 
 	server.StartServer(p)

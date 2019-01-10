@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dennisrutjes/tegola/dict"
+	"github.com/DennisRutjes/tegola/dict"
 	"github.com/go-spatial/geom"
 	"github.com/go-spatial/geom/cmp"
 

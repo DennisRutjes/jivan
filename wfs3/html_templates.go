@@ -246,7 +246,7 @@ var tmpl_collection_features = `
 		var vectorSource = new ol.source.Vector({
 			features: (new ol.format.GeoJSON()).readFeatures(geojsonObject, {
 				dataProjection: "EPSG:4326",
-				featureProjection: "EPSG:3857"
+				featureProjection: "EPSG:4326"
 			})
 		});
 		var vectorLayer = new ol.layer.Vector({

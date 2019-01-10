@@ -3,10 +3,10 @@ package provider
 import (
 	"context"
 	"fmt"
+	"github.com/go-spatial/tegola/dict"
+	"log"
 	"strings"
 
-	"github.com/dennisrutjes/tegola/dict"
-	"github.com/dennisrutjes/tegola/internal/log"
 	"github.com/go-spatial/geom"
 )
 
@@ -53,7 +53,7 @@ type LayerInfo interface {
 	ModificationTag() *string
 }
 
-// InitFunc initilize a provider given a config map. The init function should validate the config map, and report any errors. This is called by the For function.
+// InitFunc initialize a provider given a config map. The init function should validate the config map, and report any errors. This is called by the For function.
 type InitFunc func(dicter dict.Dicter) (Tiler, error)
 
 // CleanupFunc is called to when the system is shuting down, this allows the provider to cleanup.
@@ -113,7 +113,7 @@ func For(name string, config dict.Dicter) (Tiler, error) {
 }
 
 func Cleanup() {
-	log.Info("cleaning up providers")
+	log.Print("cleaning up providers")
 	for _, p := range providers {
 		if p.cleanup != nil {
 			p.cleanup()

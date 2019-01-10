@@ -37,9 +37,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/dennisrutjes/jivan/config"
-	"github.com/dennisrutjes/jivan/data_provider"
-	"github.com/dennisrutjes/jivan/wfs3"
+	"github.com/DennisRutjes/jivan/config"
+	"github.com/DennisRutjes/jivan/provider"
+	"github.com/DennisRutjes/jivan/wfs3"
 	"github.com/go-spatial/geom"
 	"github.com/julienschmidt/httprouter"
 )
@@ -626,7 +626,6 @@ NEXT_QUERY_PARAM:
 				continue NEXT_QUERY_PARAM
 			}
 		}
-
 		properties[k] = v[0]
 	}
 
@@ -660,7 +659,7 @@ NEXT_QUERY_PARAM:
 		var sc int
 		var msg string
 		switch e := err.(type) {
-		case *data_provider.BadTimeString:
+		case *provider.BadTimeString:
 			msg = e.Error()
 			sc = HTTPStatusClientError
 		default:

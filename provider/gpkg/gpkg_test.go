@@ -6,17 +6,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/DennisRutjes/jivan/provider"
+	"github.com/DennisRutjes/jivan/provider/gpkg"
+	"github.com/go-spatial/geom"
 	"os"
 	"reflect"
 	"sort"
 	"testing"
 	"time"
 
-	"github.com/dennisrutjes/tegola/dict"
-	"github.com/dennisrutjes/tegola/provider"
-	"github.com/dennisrutjes/tegola/provider/gpkg"
-	"github.com/go-spatial/geom"
-	"github.com/go-spatial/tegola"
+	"github.com/go-spatial/tegola/dict"
 )
 
 const (

@@ -32,13 +32,13 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/dennisrutjes/jivan/config"
-	"github.com/dennisrutjes/jivan/data_provider"
+	"github.com/DennisRutjes/jivan/config"
+	"github.com/DennisRutjes/jivan/provider"
 )
 
-var Provider data_provider.Provider
+var Provider provider.Provider
 
-func StartServer(p data_provider.Provider) {
+func StartServer(p provider.Provider) {
 	sconf := config.Configuration.Server
 	bindAddress := fmt.Sprintf("%v:%v", sconf.BindHost, sconf.BindPort)
 

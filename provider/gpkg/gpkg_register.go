@@ -7,6 +7,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/DennisRutjes/jivan/provider"
+
+	"log"
 	"os"
 	"regexp"
 	"sort"
@@ -14,11 +17,8 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 
-	"github.com/dennisrutjes/tegola/dict"
-	"github.com/dennisrutjes/tegola/internal/log"
-	"github.com/dennisrutjes/tegola/provider"
 	"github.com/go-spatial/geom"
-	"github.com/go-spatial/tegola"
+	"github.com/go-spatial/tegola/dict"
 )
 
 var colFinder *regexp.Regexp
@@ -174,7 +174,7 @@ func featureTableMetaData(gpkg *sql.DB) (map[string]featureTableDetails, error) 
 
 	rows, err := gpkg.Query(qtext)
 	if err != nil {
-		log.Errorf("error during query: (%v) - %v", err, qtext)
+		log.Printf("error during query: (%v) - %v", err, qtext)
 		return nil, err
 	}
 	defer rows.Close()
@@ -198,7 +198,7 @@ func featureTableMetaData(gpkg *sql.DB) (map[string]featureTableDetails, error) 
 		// map the returned geom type to a tegola geom type
 		tg, err := geomNameToGeom(geomType.String)
 		if err != nil {
-			log.Errorf("error mapping geom type (%v): %v", geomType, err)
+			log.Printf("error mapping geom type (%v): %v", geomType, err)
 			return nil, err
 		}
 
@@ -225,7 +225,7 @@ func featureTableMetaData(gpkg *sql.DB) (map[string]featureTableDetails, error) 
 }
 
 func NewTileProvider(config dict.Dicter) (provider.Tiler, error) {
-	log.Infof("%v", config)
+	log.Printf("%v", config)
 
 	filepath, err := config.String(ConfigKeyFilePath, nil)
 	if err != nil {
@@ -250,7 +250,7 @@ func NewTileProvider(config dict.Dicter) (provider.Tiler, error) {
 
 	db, err := sql.Open("sqlite3", filepath)
 	if err != nil {
-		log.Errorf("problem opening sqlite3 file: %v", filepath)
+		log.Printf("problem opening sqlite3 file: %v", filepath)
 		return nil, err
 	}
 
@@ -365,13 +365,13 @@ func NewTileProvider(config dict.Dicter) (provider.Tiler, error) {
 			// Set bounds & zoom params to include all layers
 			// Bounds checks need params: maxx, minx, maxy, miny
 			// TODO(arolek): this assumes WGS84. should be more flexible
-			wgs84ext := tegola.WGS84Bounds.Extent()
+			wgs84ext := (&geom.Extent{-180.0, -85.0511, 180.0, 85.0511}).Extent()
 			customSQL = replaceTokens(customSQL, nil, &wgs84ext)
 
 			// Get geometry type & srid from geometry of first row.
 			qtext := fmt.Sprintf("SELECT geom FROM (%v) LIMIT 1;", customSQL)
 
-			log.Debugf("qtext: %v", qtext)
+			log.Printf("qtext: %v", qtext)
 
 			var geomData []byte
 			err = db.QueryRow(qtext).Scan(&geomData)
@@ -412,7 +412,7 @@ func NewFiltererProvider(config dict.Dicter) (provider.Filterer, error) {
 
 	db, err := sql.Open("sqlite3", filepath)
 	if err != nil {
-		log.Errorf("Problem opening sqlite3 file: '%v'", filepath)
+		log.Printf("Problem opening sqlite3 file: '%v'", filepath)
 		return nil, err
 	}
 
@@ -546,13 +546,13 @@ func NewFiltererProvider(config dict.Dicter) (provider.Filterer, error) {
 			// Set bounds & zoom params to include all layers
 			// Bounds checks need params: maxx, minx, maxy, miny
 			// TODO(arolek): this assumes WGS84. should be more flexible
-			wgs84ext := tegola.WGS84Bounds.Extent()
+			wgs84ext := (&geom.Extent{-180.0, -85.0511, 180.0, 85.0511}).Extent()
 			customSQL = replaceTokens(customSQL, nil, &wgs84ext)
 
 			// Get geometry type & srid from geometry of first row.
 			qtext := fmt.Sprintf("SELECT geom FROM (%v) LIMIT 1;", customSQL)
 
-			log.Debugf("qtext: %v", qtext)
+			log.Printf("qtext: %v", qtext)
 
 			var geomData []byte
 			err = db.QueryRow(qtext).Scan(&geomData)
@@ -590,12 +590,12 @@ var providers []Provider
 // Cleanup will close all database connections and destroy all previously instantiated Provider instances
 func Cleanup() {
 	if len(providers) > 0 {
-		log.Infof("cleaning up gpkg providers")
+		log.Printf("cleaning up gpkg providers")
 	}
 
 	for i := range providers {
 		if err := providers[i].Close(); err != nil {
-			log.Errorf("err closing connection: %v", err)
+			log.Printf("err closing connection: %v", err)
 		}
 	}
 

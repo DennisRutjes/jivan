@@ -35,6 +35,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/DennisRutjes/jivan/provider/gpkg"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -44,16 +45,15 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dennisrutjes/jivan/config"
-	"github.com/dennisrutjes/jivan/data_provider"
-	"github.com/dennisrutjes/jivan/wfs3"
+	"github.com/DennisRutjes/jivan/config"
+	"github.com/DennisRutjes/jivan/provider"
+	"github.com/DennisRutjes/jivan/wfs3"
 	"github.com/go-spatial/geom"
 	"github.com/go-spatial/geom/encoding/geojson"
-	"github.com/go-spatial/tegola/provider/gpkg"
 	"github.com/julienschmidt/httprouter"
 )
 
-var testingProvider data_provider.Provider
+var testingProvider provider.Provider
 
 func init() {
 	// Instantiate a provider from the codebase's testing gpkg.
@@ -67,7 +67,7 @@ func init() {
 	if err != nil {
 		panic(err.Error())
 	}
-	testingProvider = data_provider.Provider{Tiler: gpkgTiler}
+	testingProvider = provider.Provider{Tiler: gpkgTiler}
 
 	// This is the provider the server will use for data
 	Provider = testingProvider

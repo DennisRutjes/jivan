@@ -31,14 +31,14 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/DennisRutjes/jivan/config"
+	"github.com/DennisRutjes/jivan/provider"
 	"github.com/akrylysov/algnhsa"
-	"github.com/dennisrutjes/jivan/config"
-	"github.com/dennisrutjes/jivan/data_provider"
 )
 
-var Provider data_provider.Provider
+var Provider provider.Provider
 
-func StartServer(p data_provider.Provider) {
+func StartServer(p provider.Provider) {
 	Provider = p
 	h := setUpRoutes()
 	algnhsa.ListenAndServe(h, nil)

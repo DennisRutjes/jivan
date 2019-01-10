@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"hash/fnv"
 
-	"github.com/dennisrutjes/jivan/data_provider"
+	"github.com/DennisRutjes/jivan/provider"
 	"github.com/go-spatial/geom"
 	"github.com/go-spatial/geom/encoding/geojson"
 )
 
-func FeatureData(cname string, fid uint64, p *data_provider.Provider, checkOnly bool) (content *Feature, contentId string, err error) {
+func FeatureData(cname string, fid uint64, p *provider.Provider, checkOnly bool) (content *Feature, contentId string, err error) {
 	// TODO: This calculation of contentId assumes an unchanging data set.
 	// 	When a changing data set is needed this will have to be updated, hopefully after data providers can tell us
 	// 	something about updates.
@@ -22,7 +22,7 @@ func FeatureData(cname string, fid uint64, p *data_provider.Provider, checkOnly 
 	}
 
 	pfs, err := p.GetFeatures(
-		[]data_provider.FeatureId{
+		[]provider.FeatureId{
 			{Collection: cname, FeaturePk: fid},
 		})
 	if err != nil {
@@ -44,7 +44,7 @@ func FeatureData(cname string, fid uint64, p *data_provider.Provider, checkOnly 
 }
 
 //
-func FeatureCollectionData(cName string, bbox *geom.Extent, startIdx, stopIdx uint, properties map[string]string, p *data_provider.Provider, checkOnly bool) (content *FeatureCollection, featureTotal uint, contentId string, err error) {
+func FeatureCollectionData(cName string, bbox *geom.Extent, startIdx, stopIdx uint, properties map[string]string, p *provider.Provider, checkOnly bool) (content *FeatureCollection, featureTotal uint, contentId string, err error) {
 	// TODO: This calculation of contentId assumes an unchanging data set.
 	// 	When a changing data set is needed this will have to be updated, hopefully after data providers can tell us
 	// 	something about updates.

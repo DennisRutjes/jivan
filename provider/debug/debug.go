@@ -7,8 +7,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/dennisrutjes/tegola/dict"
-	"github.com/dennisrutjes/tegola/provider"
+	"github.com/DennisRutjes/tegola/dict"
+	"github.com/DennisRutjes/tegola/provider"
 	"github.com/go-spatial/geom"
 	"github.com/go-spatial/tegola"
 )

@@ -7,20 +7,18 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"strings"
-	"time"
-
-	"github.com/dennisrutjes/tegola/basic"
-	"github.com/dennisrutjes/tegola/internal/log"
-	"github.com/dennisrutjes/tegola/provider"
+	"github.com/DennisRutjes/jivan/provider"
 	"github.com/go-spatial/geom"
 	"github.com/go-spatial/geom/encoding/wkb"
-	"github.com/go-spatial/tegola"
+	"github.com/go-spatial/tegola/basic"
+	"log"
+	"strings"
+	"time"
 )
 
 const (
-	Name                 = "gpkg"
-	DefaultSRID          = tegola.WebMercator
+	Name = "gpkg"
+	//DefaultSRID          = tegola.WebMercator
 	DefaultIDFieldName   = "fid"
 	DefaultGeomFieldName = "geom"
 )
@@ -41,13 +39,13 @@ const (
 func decodeGeometry(bytes []byte) (*BinaryHeader, geom.Geometry, error) {
 	h, err := NewBinaryHeader(bytes)
 	if err != nil {
-		log.Error("error decoding geometry header: %v", err)
+		log.Printf("error decoding geometry header: %v", err)
 		return h, nil, err
 	}
 
 	geo, err := wkb.DecodeBytes(bytes[h.Size():])
 	if err != nil {
-		log.Errorf("error decoding geometry: %v", err)
+		log.Printf("error decoding geometry: %v", err)
 		return h, nil, err
 	}
 
@@ -64,7 +62,7 @@ type Provider struct {
 }
 
 func (p *Provider) Layers() ([]provider.LayerInfo, error) {
-	log.Debug("attempting gpkg.Layers()")
+	log.Print("attempting gpkg.Layers()")
 
 	ls := make([]provider.LayerInfo, len(p.layers))
 
@@ -74,13 +72,13 @@ func (p *Provider) Layers() ([]provider.LayerInfo, error) {
 		i++
 	}
 
-	log.Debugf("returning LayerInfo array: %v", ls)
+	log.Printf("returning LayerInfo array: %v", ls)
 
 	return ls, nil
 }
 
 func (p *Provider) TileFeatures(ctx context.Context, layer string, tile provider.Tile, fn func(f *provider.Feature) error) error {
-	log.Debugf("fetching layer %v", layer)
+	log.Printf("fetching layer %v", layer)
 
 	pLayer := p.layers[layer]
 
@@ -129,11 +127,11 @@ func (p *Provider) TileFeatures(ctx context.Context, layer string, tile provider
 		qtext = replaceTokens(pLayer.sql, &z, tileBBox)
 	}
 
-	log.Debugf("qtext: %v", qtext)
+	log.Printf("qtext: %v", qtext)
 
 	rows, err := p.db.Query(qtext)
 	if err != nil {
-		log.Errorf("err during query: %v - %v", qtext, err)
+		log.Printf("err during query: %v - %v", qtext, err)
 		return err
 	}
 	defer rows.Close()
@@ -156,7 +154,7 @@ func (p *Provider) TileFeatures(ctx context.Context, layer string, tile provider
 		}
 
 		if err = rows.Scan(valPtrs...); err != nil {
-			log.Errorf("err reading row values: %v", err)
+			log.Printf("err reading row values: %v", err)
 			return err
 		}
 
@@ -181,11 +179,11 @@ func (p *Provider) TileFeatures(ctx context.Context, layer string, tile provider
 				}
 
 			case pLayer.geomFieldname:
-				log.Debug("extracting geopackage geometry header.", vals[i])
+				log.Print("extracting geopackage geometry header.", vals[i])
 
 				geomData, ok := vals[i].([]byte)
 				if !ok {
-					log.Errorf("unexpected column type for geom field. got %t", vals[i])
+					log.Printf("unexpected column type for geom field. got %t", vals[i])
 					return errors.New("unexpected column type for geom field. expected blob")
 				}
 
@@ -215,7 +213,7 @@ func (p *Provider) TileFeatures(ctx context.Context, layer string, tile provider
 					feature.Properties[cols[i]] = v
 				default:
 					// TODO(arolek): return this error?
-					log.Errorf("unexpected type for sqlite column data: %v: %T", cols[i], v)
+					log.Printf("unexpected type for sqlite column data: %v: %T", cols[i], v)
 				}
 			}
 		}
@@ -241,7 +239,7 @@ func (p *Provider) SupportedFilters() []string {
 
 func (p *Provider) StreamFeatures(ctx context.Context, layer string, zoom uint,
 	fn provider.FeatureConsumer, filters ...provider.BaseFilterer) error {
-	log.Debugf("fetching layer %v", layer)
+	log.Printf("fetching layer %v", layer)
 
 	var tileBBox *[4]float64 // geom.MinMaxer
 	var indices []uint
@@ -359,10 +357,10 @@ func (p *Provider) StreamFeatures(ctx context.Context, layer string, zoom uint,
 		qtext = qtext + fmt.Sprintf(" ORDER BY %v %v", pLayer.idFieldname, indexClause)
 	}
 
-	log.Debugf("qtext: %v", qtext)
+	log.Printf("qtext: %v", qtext)
 	rows, err := p.db.Query(qtext)
 	if err != nil {
-		log.Errorf("err during query: %v - %v", qtext, err)
+		log.Printf("err during query: %v - %v", qtext, err)
 		return err
 	}
 	defer rows.Close()
@@ -385,7 +383,7 @@ func (p *Provider) StreamFeatures(ctx context.Context, layer string, zoom uint,
 		}
 
 		if err = rows.Scan(valPtrs...); err != nil {
-			log.Errorf("err reading row values: %v", err)
+			log.Printf("err reading row values: %v", err)
 			return err
 		}
 
@@ -410,11 +408,11 @@ func (p *Provider) StreamFeatures(ctx context.Context, layer string, zoom uint,
 				}
 
 			case pLayer.geomFieldname:
-				log.Debugf("extracting geopackage geometry header.", vals[i])
+				//log.Printf("extracting geopackage geometry header.", vals[i])
 
 				geomData, ok := vals[i].([]byte)
 				if !ok {
-					log.Errorf("unexpected column type for geom field. got %t", vals[i])
+					//log.Printf("unexpected column type for geom field. got %t", vals[i])
 					return errors.New("unexpected column type for geom field. expected blob")
 				}
 
@@ -446,7 +444,7 @@ func (p *Provider) StreamFeatures(ctx context.Context, layer string, zoom uint,
 					feature.Properties[cols[i]] = v
 				default:
 					// TODO(arolek): return this error?
-					log.Errorf("unexpected type for sqlite column data: %v: %T", cols[i], v)
+					log.Printf("unexpected type for sqlite column data: %v: %T", cols[i], v)
 				}
 			}
 		}

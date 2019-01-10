@@ -29,7 +29,7 @@ package wfs3
 
 import (
 	"fmt"
-	"github.com/dennisrutjes/jivan/provider"
+	"github.com/DennisRutjes/jivan/provider"
 	"hash/fnv"
 	"log"
 )

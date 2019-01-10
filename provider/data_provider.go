@@ -68,7 +68,7 @@ func (et EmptyTile) Extent() (extent *geom.Extent, srid uint64) {
 func (et EmptyTile) BufferedExtent() (extent *geom.Extent, srid uint64) {
 	if et.extent == nil {
 		max := 20037508.34
-		et.srid = 3857
+		et.srid = 4327
 		et.extent = &geom.Extent{-max, -max, max, max}
 	}
 	return et.extent, et.srid

@@ -28,12 +28,11 @@
 package wfs3
 
 import (
-	"html/template"
-
-	"github.com/dennisrutjes/jivan/config"
-	"github.com/dennisrutjes/jivan/util"
+	"github.com/DennisRutjes/jivan/config"
+	"github.com/DennisRutjes/jivan/util"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/go-spatial/geom/encoding/geojson"
+	"html/template"
 )
 
 // --- @See http://raw.githubusercontent.com/opengeospatial/WFS_FES/master/core/openapi/schemas/root.yaml
@@ -75,7 +74,6 @@ var RootContentSchema openapi3.Schema = openapi3.Schema{
 // --- @See https://raw.githubusercontent.com/opengeospatial/WFS_FES/master/core/openapi/schemas/bbox.yaml
 //	for bbox schema
 // maxItems is needed for setting the bbox array MaxItems in the below Schema literal.
-var maxItems int64 = 4
 
 type Bbox struct {
 	Crs  string    `json:"crs"`
@@ -94,7 +92,7 @@ var BboxSchema openapi3.Schema = openapi3.Schema{
 			Value: &openapi3.Schema{
 				Type:     "array",
 				MinItems: 4,
-				MaxItems: &maxItems,
+				MaxItems: puint64(4),
 				Items:    openapi3.NewSchemaRef("", openapi3.NewFloat64Schema().WithMin(-180).WithMax(180)),
 			},
 		},
@@ -355,14 +353,14 @@ func (f *Feature) MarshalHTML(c config.Config) ([]byte, error) {
 	return util.RenderTemplate(tmpl_base, data)
 }
 
-func pint64(i int) *int64 {
-	i64 := int64(i)
+func puint64(i uint64) *uint64 {
+	i64 := uint64(i)
 	return &i64
 }
 
 var BBoxSchema openapi3.Schema = openapi3.Schema{
 	Type:      "array",
 	Items:     &openapi3.SchemaRef{Value: openapi3.NewFloat64Schema()},
-	MinLength: int64(4),
-	MaxLength: pint64(4),
+	MinLength: 4,
+	MaxLength: puint64(4),
 }
